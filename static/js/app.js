@@ -1,4 +1,4 @@
-// Store the URL
+//Store the URL
 const url = "https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json";
 
 // Call upon the JSON data using D3
@@ -21,8 +21,19 @@ d3.json(url).then((data) => {
       selector.append("option").text(sample).property("value", sample);
     });
 
+    // Get the first sample from the list
+    const firstSample = sampleNames[0];
+
+    // Build charts and metadata panel with the first sample
+    buildCharts(firstSample);
+    updateMetadata(firstSample);
+});
+
+// Function to update the metadata panel
+function updateMetadata(sample) {
+  d3.json(url).then((data) => {
     // Filter the metadata for the object with the desired sample number
-    let metadata = data.metadata.filter(meta => meta.id == sampleNames[0])[0]; // Assuming you want the first sample
+    let metadata = data.metadata.filter(meta => meta.id == sample)[0];
 
     // Use d3 to select the panel with id of `#sample-metadata`
     let panel = d3.select("#sample-metadata");
@@ -34,10 +45,8 @@ d3.json(url).then((data) => {
     Object.entries(metadata).forEach(([key, value]) => {
       panel.append("h6").text(`${key}: ${value}`);
     });
-});
-
-// Call the init function to set everything up
-init();
+  });
+}
 
 // Function to build both charts
 function buildCharts(sample) {
